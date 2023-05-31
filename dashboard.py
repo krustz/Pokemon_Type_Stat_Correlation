@@ -11,7 +11,8 @@ from dash import Input, Output
 
 
 
-c = "#070D0D" 
+c = "#070D0D"
+
 app = dash.Dash()
 
 df = pd.read_csv(
@@ -52,6 +53,7 @@ app.layout = html.Div(
                         dcc.Dropdown(
                             id="Stat-dropdown",
                             options=[
+                                {"label": "Total", "value":"Total"},
                                 {"label": "HP", "value": "HP"},
                                 {"label": "Attack", "value": "Attack"},
                                 {"label": "Defense", "value": "Defense"},
@@ -80,19 +82,23 @@ app.layout = html.Div(
 
 @app.callback(
     Output("Type-vs-Stat", "figure"),
-    Input("Type-dropdown", "value")
+    Input("Type-dropdown", "value"),
+    Input("Stat-dropdown", "value")
 )
 
 
 
-def update_figure(Type):
+def update_figure(Type, Stat):
     
     filtered_dataset = df[(df["Type 1"] == Type)]
     
-    print(Type)
     if(Type):
         c=p[Type]
-    fig = px.histogram(filtered_dataset, x="Total", color_discrete_sequence = [c])
+
+    if(Stat or Stat!="Total"):
+        fig = px.histogram(filtered_dataset, x=Stat, color_discrete_sequence = [c], range_x = [0, 300])
+    else:
+        fig = px.histogram(filtered_dataset, x="Total", color_discrete_sequence = [c],  range_x = [0, 900])
    
     fig.update_layout(
         
@@ -103,31 +109,6 @@ def update_figure(Type):
 
     return fig
 
-
-'''fig = go.Figure()
-
-types = ['Grass', 'Fire', 'Water', 'Bug', 'Normal',
-    'Poison', 'Electric', 'Ground', 'Fairy', 'Fighting', 'Psychic',
-    'Rock', 'Ghost', 'Ice', 'Dragon', 'Dark', 'Steel', 'Flying']
-
-for type in types:
-    fig.add_trace(go.Violin(x=df['Type 1'][df['Type 1'] == type],
-                            y=df['Total'][df['Type 1'] == type],
-                            name=type,
-                            box_visible=True,
-                            meanline_visible=True,
-                            line_color = p[type]))
-
-
-
-
-
-
-#fig = px.violin(df, y="Total", x="Type 1", color=p, box=True, points="all",width=800, height=500)
-
-
-app.layout = html.Div([dcc.Graph(id="Primary Type to stat total", figure=fig)])
-'''
 
 if __name__ == "__main__":
     app.run_server(debug=True)
