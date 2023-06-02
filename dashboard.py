@@ -5,9 +5,9 @@ import plotly.express as px
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-import seaborn as sn
 import plotly.graph_objects as go
 from dash import Input, Output
+
 
 
 
@@ -16,7 +16,7 @@ c = "#070D0D"
 app = dash.Dash()
 
 df = pd.read_csv(
-    "Pokemon.csv"
+    "PokemonAmmended.csv"
 )
 
 p = {'Grass':'#056608', 'Fire':'#f73718', 'Water':'#00008B', 'Bug':'#90EE90', 'Normal':'#F0EAD6',
@@ -90,8 +90,8 @@ app.layout = html.Div(
 
 def update_figure(Type, Stat):
     
-    filtered_dataset = df[(df["Type 1"] == Type)]
     
+    filtered_dataset = df[(df["Type 1"] == Type)]
     if(Type):
         c=p[Type]
 
